@@ -33,7 +33,7 @@ const DashboardPage = () => {
     };
 
     fetchData();
-  }, [userId, updated, projects]);
+  }, [userId, updated]);
 
   return (
     <div className="w-full min-h-screen bg-slate-950 ">
