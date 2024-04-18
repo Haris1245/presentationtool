@@ -26,8 +26,19 @@ import {
 import { Input } from "../ui/input";
 import { useState } from "react";
 import { Button } from "../ui/button";
-import { revalidatePath } from "next/cache";
-const CreateButton = () => {
+
+interface ProjectData {
+  id: string;
+  userId: string | null;
+  name: string;
+  description: string | null;
+  gradient: string;
+}
+const CreateButton = ({
+  setProjects,
+}: {
+  setProjects: React.Dispatch<React.SetStateAction<ProjectData[]>>;
+}) => {
   const [open, setOpen] = useState(false);
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -70,22 +81,22 @@ const CreateButton = () => {
       ")";
     setBackground(newBg);
     setCode(newBg);
-    return newBg; // Return the generated background
+    return newBg;
   };
-  // Extract data from response
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
-      const newBg = generateBackground(); // Generate the background
+      const newBg = generateBackground();
       const response = await axios.post("/api/create-project", {
         name: values.name,
         description: values.description,
-        gradient: newBg, // Use the generated background here
+        gradient: newBg,
       });
 
       if (response.status === 200) {
         setOpen(false);
         form.reset();
+        setProjects((prevProjects) => [...prevProjects, response.data]);
       }
     } catch (err: any) {
       console.log(err);
