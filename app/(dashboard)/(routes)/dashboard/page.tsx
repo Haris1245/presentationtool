@@ -1,7 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { DashboardNavBar } from "@/components/dashboardNavBar";
-import CreateButton from "@/components/createProject/createButton";
 import prismadb from "@/lib/prisma";
 import { useAuth } from "@clerk/nextjs";
 import ProjectCard from "@/components/projectCard";
@@ -29,6 +28,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { Plus } from "lucide-react";
 interface ProjectData {
   id: string;
   userId: string | null; // Make userId nullable
@@ -39,6 +39,7 @@ interface ProjectData {
 
 const DashboardPage = () => {
   const [projects, setProjects] = useState<ProjectData[]>([]);
+  const [updated, setUpdated] = useState(false);
   const { userId } = useAuth();
   const [open, setOpen] = useState(false);
   const form = useForm<z.infer<typeof formSchema>>({
@@ -96,6 +97,7 @@ const DashboardPage = () => {
       });
 
       if (response.status === 200) {
+        setUpdated(true);
         setOpen(false);
         form.reset();
       }
@@ -110,13 +112,14 @@ const DashboardPage = () => {
         const projectsData = response.data; // Extract data from response
         console.log(projectsData); // Log the fetched data
         setProjects(projectsData);
+        setUpdated(false);
       } catch (error) {
         console.error("Error fetching projects:", error);
       }
     };
 
     fetchData();
-  }, [userId]);
+  }, [userId, updated]);
   // Fetch data whenever userId changes
 
   return (
@@ -129,8 +132,9 @@ const DashboardPage = () => {
         className="w-full grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 px-4 my-10 "
       >
         <Dialog open={open} onOpenChange={setOpen}>
-          <DialogTrigger>
-            <CreateButton />
+          <DialogTrigger className="rounded-3xl bg-gray-900 flex flex-col mb-5 mx-4 items-center p-10 shadow-gradient-right transition duration-200 ease-in-out hover:shadow-gradient-right-hover">
+            <Plus className="h-[50px] w-[150px] text-gray-50" />
+            <span className="font-xs text-gray-50 pt-3">New</span>
           </DialogTrigger>
           <DialogContent>
             <DialogHeader>
