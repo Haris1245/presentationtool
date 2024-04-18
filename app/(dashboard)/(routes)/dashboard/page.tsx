@@ -16,6 +16,7 @@ interface ProjectData {
 
 const DashboardPage = () => {
   const [projects, setProjects] = useState<ProjectData[]>([]);
+  const [updated, setUpdated] = useState(false);
   const { userId } = useAuth();
 
   useEffect(() => {
@@ -25,6 +26,7 @@ const DashboardPage = () => {
         const projectsData = response.data;
         console.log(projectsData);
         setProjects(projectsData);
+        setUpdated(false);
       } catch (error) {
         console.error("Error fetching projects:", error);
       }
@@ -42,7 +44,7 @@ const DashboardPage = () => {
         style={{ gridAutoRows: "minmax(200px, auto)" }}
         className="w-full grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 px-4 my-10 "
       >
-        <CreateButton setProjects={setProjects} />
+        <CreateButton setUpdated={setUpdated} />
         {projects.map((project) => (
           <ProjectCard key={project.id} project={project} />
         ))}

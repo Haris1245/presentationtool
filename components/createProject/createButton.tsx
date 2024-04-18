@@ -35,9 +35,9 @@ interface ProjectData {
   gradient: string;
 }
 const CreateButton = ({
-  setProjects,
+  setUpdated,
 }: {
-  setProjects: React.Dispatch<React.SetStateAction<ProjectData[]>>;
+  setUpdated: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
   const [open, setOpen] = useState(false);
   const form = useForm<z.infer<typeof formSchema>>({
@@ -96,7 +96,7 @@ const CreateButton = ({
       if (response.status === 200) {
         setOpen(false);
         form.reset();
-        setProjects((prevProjects) => [...prevProjects, response.data]);
+        setUpdated(true);
       }
     } catch (err: any) {
       console.log(err);
