@@ -1,52 +1,27 @@
 "use client";
 import React, { useState, useEffect } from "react";
+interface ProjectData {
+  id: string;
+  userId: string | null; // Make userId nullable
+  name: string;
+  description: string | null;
+  gradient: string; // Make description nullable
+}
 
-const ProjectCard = () => {
-  const [background, setBackground] = useState("");
-  const [code, setCode] = useState("");
+interface ProjectCardProps {
+  project: ProjectData;
+}
 
-  const randomElement = () => {
-    const array = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, "a", "b", "c", "d", "e", "f"];
-    return array[Math.floor(array.length * Math.random())];
-  };
-
-  const randomColor = () => {
-    let color = "#";
-    for (let i = 0; i < 6; i++) {
-      color += randomElement();
-    }
-    return color;
-  };
-
-  const randomAngle = () => {
-    return Math.floor(360 * Math.random());
-  };
-
-  const generateBackground = () => {
-    const gradientColor1 = randomColor();
-    const gradientColor2 = randomColor();
-    const newBg =
-      "linear-gradient(" +
-      randomAngle() +
-      "deg, " +
-      gradientColor1 +
-      ", " +
-      gradientColor2 +
-      ")";
-    setBackground(newBg);
-    setCode(newBg);
-  };
-
-  useEffect(() => {
-    generateBackground(); // Call the function when the component mounts
-  }, []); // Empty dependency array means it only runs once, on mount
-
+const ProjectCard: React.FC<ProjectCardProps> = ({ project }) => {
   return (
     <div
-      className="w-full h-full mx-5 opacity-40 rounded-3xl"
-      style={{ background: background }}
+      className="mx-5 bg-opacity-15 rounded-3xl flex items-end mb-5 transition duration-200 ease-in-out hover:scale-110"
+      style={{ background: project.gradient }}
     >
-      <div className="h-full bg-gradient-to-b from-transparent to-gray-900 rounded-3xl"></div>
+      <div className="h-[40%] bg-gray-900 w-full rounded-b-2xl">
+        <h1 className="text-white px-2 pt-2">{project.name}</h1>
+        <h3 className="text-gray-600 px-2 pt-1">{project.description}</h3>
+      </div>
     </div>
   );
 };

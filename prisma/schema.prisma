@@ -25,6 +25,7 @@ model Presentation {
   id          String  @id @default(cuid())
   name        String
   description String?
+  gradient    String
   slides      Slide[]
   user        User?   @relation(fields: [userId], references: [userId])
   userId      String?

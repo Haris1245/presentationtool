@@ -26,7 +26,7 @@ import {
 import { Input } from "../ui/input";
 import { useState } from "react";
 import { Button } from "../ui/button";
-
+import { revalidatePath } from "next/cache";
 const CreateButton = () => {
   const [open, setOpen] = useState(false);
   const form = useForm<z.infer<typeof formSchema>>({
@@ -37,14 +37,53 @@ const CreateButton = () => {
     },
   });
 
+  const [background, setBackground] = useState("");
+  const [code, setCode] = useState("");
+
+  const randomElement = () => {
+    const array = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, "a", "b", "c", "d", "e", "f"];
+    return array[Math.floor(array.length * Math.random())];
+  };
+
+  const randomColor = () => {
+    let color = "#";
+    for (let i = 0; i < 6; i++) {
+      color += randomElement();
+    }
+    return color;
+  };
+
+  const randomAngle = () => {
+    return Math.floor(360 * Math.random());
+  };
+
+  const generateBackground = () => {
+    const gradientColor1 = randomColor();
+    const gradientColor2 = randomColor();
+    const newBg =
+      "linear-gradient(" +
+      randomAngle() +
+      "deg, " +
+      gradientColor1 +
+      ", " +
+      gradientColor2 +
+      ")";
+    setBackground(newBg);
+    setCode(newBg);
+    return newBg; // Return the generated background
+  };
+  // Extract data from response
+
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
+      const newBg = generateBackground(); // Generate the background
       const response = await axios.post("/api/create-project", {
         name: values.name,
         description: values.description,
+        gradient: newBg, // Use the generated background here
       });
 
-      if (response.status == 200) {
+      if (response.status === 200) {
         setOpen(false);
         form.reset();
       }
@@ -52,9 +91,10 @@ const CreateButton = () => {
       console.log(err);
     }
   };
+
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger className="rounded-3xl bg-gray-900 flex flex-col  mx-7 items-center p-10 shadow-gradient-right transition duration-200 ease-in-out hover:shadow-gradient-right-hover">
+      <DialogTrigger className="rounded-3xl bg-gray-900 flex flex-col mb-5 mx-4 items-center p-10 shadow-gradient-right transition duration-200 ease-in-out hover:shadow-gradient-right-hover">
         <Plus className="h-[50px] w-[50px] text-gray-50" />
         <span className="font-xs text-gray-50 pt-3">New</span>
       </DialogTrigger>
@@ -81,7 +121,7 @@ const CreateButton = () => {
               )}
             />
             <FormField
-              name="email"
+              name="description"
               render={({ field }) => (
                 <FormItem className="w-[350px] block m-auto">
                   <FormLabel>Project Description</FormLabel>
