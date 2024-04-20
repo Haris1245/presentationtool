@@ -15,6 +15,11 @@ export async function POST(req: Request) {
       return new NextResponse("Project name is required!!", { status: 401 });
     }
 
+if (!gradient) {
+return new NextResponse("Project Gradient is required!", {status: 401});
+
+}
+
     const project = await prismadb.presentation.create({
       data: {
         userId: userId,
